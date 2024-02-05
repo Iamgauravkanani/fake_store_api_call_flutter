@@ -1,4 +1,5 @@
 import 'package:fakestore/helper/api_helper.dart';
+import 'package:fakestore/mode/model.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
@@ -14,11 +15,23 @@ class Home extends StatelessWidget {
       body: FutureBuilder(
         future: ApiHelper.apiHelper.fetchData(),
         builder: (context, snapshot) {
-          // if(){
-          //
-          // }else if(){
-          //
-          // }
+          if (snapshot.hasError) {
+            return Text("${snapshot.error}");
+          } else if (snapshot.hasData) {
+            List<ApiModel>? data = snapshot.data;
+            return ListView.builder(itemBuilder: (snapshot, i) {
+              return Card(
+                child: ListTile(
+                  title: Text("${data?[i].title}"),
+                  subtitle: Text("${data?[i].description}"),
+                  leading: CircleAvatar(
+                    foregroundImage: NetworkImage("${data?[i].image}"),
+                  ),
+                  trailing: Text("${data?[i].price}"),
+                ),
+              );
+            });
+          }
           return const Center(
             child: CircularProgressIndicator(),
           );
